@@ -15,7 +15,7 @@ pipeline{
                 
                 script{
                     
-                   git branch: 'main', url: 'https://github.com/shriniwas-devops/demo-counter-app.git'
+               git 'https://github.com/shriniwas-devops/demo-counter-app.git'
                 }
          
             }
