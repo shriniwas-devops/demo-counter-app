@@ -1,48 +1,56 @@
 pipeline{
-    
-    agent any 
+
+    agent any
 
     parameters{
 
-        choice{name: 'action', choices: 'create\ndestroy\destroyekscluster'  }
+        choice(name: 'action', choices: 'create\ndestroy\destroyekscluster'  )
+        string(name: 'cluster', defaultvalue: 'demo-cluster', description: 'Eks cluster name')
+        string(name: 'region',  defaultvalue: 'us-east-1', description: 'Eks cluster region')
+
     }
-    
+    enviroment{
+
+            ACCESS_KEY = credentials('aws_access_key_id')
+
+            SECRET_KEY = credentials('aws_secret_access_key')
+
+    }
+
     stages {
-        
+
         stage('Git Checkout'){
-            
+
             steps{
-                
+
                 script{
-                    
+
                git 'https://github.com/shriniwas-devops/demo-counter-app.git'
                 }
-         
+
             }
 
               stage('eks connect'){
-            
+
             steps{
-                
+
               sh """
-                    aws eks --region example_region update-kubeconfig --name cluster_name
-                    
+
+                     aws configure set_aws_access_key_id "$ACCESS_KEY "
+                     aws configure set aws_secret_access_key "$SECRET_KEY "
+                     aws configure set  region ""
+                    aws eks --region ${params.region}update-kubeconfig --name ${params.cluster}
 
               """
             }
 
-
-
-      
-
               stage('eks deployments'){
 
                 when{  expression { params.action == 'create'}}
-            
+
             steps{
-                
+
                 scripts{
-                    
 
                     def apply = false
 
@@ -63,27 +71,13 @@ pipeline{
                         kubectl apply -f .
                         """;
                     }
-                    
-               
+
                 }
-         
+
             }
 
+              }
 
-
-
-
-      
-
-
-
-
-
+              }
 
         }
-
-    }
-                
-          
-            
-}
