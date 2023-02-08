@@ -15,13 +15,13 @@ pipeline {
         stage('Git Checkout') {
             steps {
               } script {
-            git 'https://github.com/shriniwas-devops/demo-counter-app.git'
+                git 'https://github.com/shriniwas-devops/demo-counter-app.git'
             }
         }
 
-    stage('eks connect') {
+        stage('eks connect') {
             steps {
-            sh """
+                sh """
 
                      aws configure set_aws_access_key_id "$ACCESS_KEY "
                      aws configure set aws_secret_access_key "$SECRET_KEY "
@@ -47,13 +47,14 @@ pipeline {
         //                 CurrentBuild.result = 'UNSTABLE'
         //             }
 
-    //             if (apply) {
-    //                 sh '''
-    //                 kubectl apply -f .
-    //                 '''
-    //             }
-    //         }
-    //     }
-    // }
+        //             if (apply) {
+        //                 sh '''
+        //                 kubectl apply -f .
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
+        }
     }
-    }
+}
