@@ -1,40 +1,30 @@
-pipeline{
-
+pipeline {
     agent any
 
-    parameters{
+    parameters {
+        choice(name: 'action', choices: 'create\ndestroy\ndestroyekscluster')
+    }
 
-        choice(name: 'action', choices: 'create\ndestroy\destroyekscluster'  )
         string(name: 'cluster', defaultvalue: 'demo-cluster', description: 'Eks cluster name')
         string(name: 'region',  defaultvalue: 'us-east-1', description: 'Eks cluster region')
-
-    }
-    enviroment{
-
+}
+    enviroment {
             ACCESS_KEY = credentials('aws_access_key_id')
 
             SECRET_KEY = credentials('aws_secret_access_key')
-
     }
 
     stages {
-
-        stage('Git Checkout'){
-
-            steps{
-
-                script{
-
-               git 'https://github.com/shriniwas-devops/demo-counter-app.git'
-                }
-
+        stage('Git Checkout') {
+            steps {
+              } script {
+            git 'https://github.com/shriniwas-devops/demo-counter-app.git'
             }
+        }
 
-              stage('eks connect'){
-
-            steps{
-
-              sh """
+    stage('eks connect') {
+            steps {
+            sh """
 
                      aws configure set_aws_access_key_id "$ACCESS_KEY "
                      aws configure set aws_secret_access_key "$SECRET_KEY "
@@ -44,40 +34,30 @@ pipeline{
               """
             }
 
-              stage('eks deployments'){
+        stage('eks deployments') {
+                when {  expression { params.action == 'create' } }
 
-                when{  expression { params.action == 'create'}}
-
-            steps{
-
-                scripts{
-
+            steps {
+                scripts {
                     def apply = false
 
-                    try{
-                        input message: please confirm the apply to intiate the deployments, ok: 'ready to apply the config'
+                    try {
+                        input message: 'please confirm the apply to intiate the deployments', ok: 'ready to apply the config'
                         apply = true
-
                     }
-                    catch(err){
+                    catch (err) {
                         apply = false
                         CurrentBuild.result = 'UNSTABLE'
-
                     }
 
-                    if(apply){
-
-                        sh """
+                    if (apply) {
+                        sh '''
                         kubectl apply -f .
-                        """;
+                        '''
                     }
-
                 }
-
             }
-
-              }
-
-              }
-
         }
+    }
+    }
+}
