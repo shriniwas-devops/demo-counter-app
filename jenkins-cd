@@ -3,11 +3,9 @@ pipeline {
 
     parameters {
         choice(name: 'action', choices: 'create\ndestroy\ndestroyekscluster')
-    }
-
         string(name: 'cluster', defaultvalue: 'demo-cluster', description: 'Eks cluster name')
         string(name: 'region',  defaultvalue: 'us-east-1', description: 'Eks cluster region')
-}
+    }
     environment {
             ACCESS_KEY = credentials('aws_access_key_id')
             SECRET_KEY = credentials('aws_secret_access_key')
@@ -59,4 +57,3 @@ pipeline {
     // }
     }
     }
-
