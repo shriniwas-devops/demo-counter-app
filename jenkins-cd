@@ -14,7 +14,6 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-              } script {
                 git 'https://github.com/shriniwas-devops/demo-counter-app.git'
             }
         }
