@@ -27,7 +27,7 @@ pipeline {
                      aws configure set  region ""
                      aws eks --region ${params.region}update-kubeconfig --name ${params.cluster}
 
-                """
+                """;
             }
 
             // stage('eks deployments') {
